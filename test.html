@@ -31,6 +31,24 @@
       outputTextarea.value = cryptMessage;
       ev.preventDefault();
     };
+    var message = 'Hello, I love you!',
+        key = 'qwvvu4556';
+
+    for (var i = 0; i < 1000; i++) {
+      var test = crypt.create(message, key);
+      var test = crypt.parse(test, key);
+      console.log(test === message);
+    }
+
+    console.log('origin message: \n'.toUpperCase(), message);
+
+    message = crypt.create(message, key);
+
+    console.log('cryptographic message: \n'.toUpperCase(), message);
+
+    message = crypt.parse(message, key);
+
+    console.log('parsing message: \n'.toUpperCase(), message);
   </script> 
 </body>
 </html>
