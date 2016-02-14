@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cryptographer test</title>
+  <script src="crypt.js"></script>
+</head>
+<body>
+  <form id="test">
+    <div class="input">
+      <textarea name="message" placeholder="Put your message"></textarea>
+    </div>
+    <div class="input">
+      <input type="text" name="key" placeholder="Put your key"> 
+    </div>
+    <div class="output">
+      <textarea name="output"></textarea>
+    </div>
+    <div>
+      <input type="submit" value="Check">
+    </div>
+  </form>
+  <script>
+    var form = document.getElementById("test");
+    var messageInput = document.getElementsByName('message')[0];
+    var keyInput = document.getElementsByName('key')[0];
+    var outputTextarea = document.getElementsByName('output')[0];
+
+    form.onsubmit = function(ev) {
+      var cryptMessage = crypt.create(messageInput.value, keyInput.value);
+      outputTextarea.value = cryptMessage;
+      ev.preventDefault();
+    };
+  </script> 
+</body>
+</html>
