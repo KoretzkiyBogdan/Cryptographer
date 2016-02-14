@@ -19,6 +19,6 @@ Example:
     
   myMessage = crypt.parse(myMessage, key);
   
-    console.log(myMessage);
+  console.log(myMessage);
   
-  "Isn't funny, right?"
+    "Isn't funny, right?"
