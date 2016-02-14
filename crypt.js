@@ -1,11 +1,11 @@
 var crypt = (function() {
 
   // Random symbols
-  var letters = ['i','k','l','m', 'n','o', 'p', 'q', 'r', 's', 'x', 'y', 'z'];
+  var letters = ['k','l','m', 'n','o', 'q', 'r', 's', 'x', 'y', 'z'];
   // flag symbols, that means as value must be reversed
-  var specReverse = ['h', 't', 'u'];
-  //flag symbols, that means as value symbor must be charCode
-  var specChar = ['v', 'w', 't', 'g', 'j'];
+  var specReverse = ['h', 'u', 'i'];
+  //flag symbols, that means as value symbol must be conver to charCode
+  var specChar = ['v', 'w', 't', 'g', 'j',  'p', 't'];
 
   var getTrueOrFalse = function() {
     return !!Math.round(Math.random());
@@ -25,9 +25,10 @@ var crypt = (function() {
   }
 
   var wrappedInRandomletters = function(char) {
+
     specChar.forEach(function(spec) {
       if (spec.charCodeAt(0) == parseInt(char, 16)) {
-        char = spec;
+        char = getTrueOrFalse() ? spec.toUpperCase(): spec;
       }
     });
 
@@ -88,12 +89,13 @@ var crypt = (function() {
 
 
     return text.match(exp).map(function(char) {
-      //if match spec symbols, then need remove that symbols and return reversed value
+      //if match specReverse symbols, then need remove that symbols and return reversed value
       if (char.match(specReverseExp)) {
         char = reverseValue(char.replace(specReverseExp, ''));
       };
+      //if match specChar symbols, then need conver to lowerCase and get char code in hexadecimal system
       if (char.match(specCharExp)) {
-        char = char.charCodeAt(0).toString(16);
+        char = char.toLowerCase().charCodeAt(0).toString(16);
       }
       char = bitwiseXOR(parseInt(char, 16), keys);
       return String.fromCharCode(char);
