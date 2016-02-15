@@ -1,6 +1,12 @@
 # Cryptographer
 Simple cryptographer created by me
 
+Install locally:
+  - clone this repository
+  - run "npm install"
+  - run gulp
+  - use :)
+
 Usage:
 
   crypt.create(regularMessage, key) - return cryptographic string. Nobody can read this if don't know key.
@@ -22,3 +28,5 @@ Example:
   console.log(myMessage);
   
     "Isn't funny, right?"
+    
+  - Live Demo http://koretzkiybogdan.github.io/Cryptographer.
