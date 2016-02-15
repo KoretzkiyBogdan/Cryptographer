@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cryptographer handle test</title>
+  <script src="bundles/crypt.js"></script>
+  <script src="bundles/handleTest.js"></script>
+  <link rel="stylesheet" href="bundles/style.css">
+</head>
+<body>
+  <div class="top-bar">
+    <a href="test/index.html"><button>Auto test page</button></a>
+  </div>
+
+  <form id="test">
+    <div class="input">
+      <textarea name="message" placeholder="Put your message"></textarea>
+    </div>
+    <div class="input">
+      <input type="text" name="key" placeholder="Put your key">
+    </div>
+    <div class="choice">
+      <span>Choice method:</span>
+      <label>
+        <input type="radio" name="choice" value="create" checked><div>Create</div>
+      </label>
+      <label>
+        <input type="radio" name="choice" value="parse"><div>Parse</div>
+      </label>
+    </div>
+    <div>
+      <input type="submit" value="Check">
+    </div>
+  </form>
+  <textarea class="output" readonly></textarea>
+</body>
+</html>

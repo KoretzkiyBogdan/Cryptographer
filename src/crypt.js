@@ -1,11 +1,11 @@
 var crypt = (function() {
 
   // Random symbols
-  var letters = ['k','l','m', 'n','o', 'q', 'r', 's', 'x', 'y', 'z'];
+  var letters = ['k','l','m', 'n'];
   // flag symbols, that means as value must be reversed
-  var specReverse = ['h', 'u', 'i'];
+  var specReverse = ['h', 'u', 'i', 'в', 'г', 'д', 'ж', 'я'];
   //flag symbols, that means as value symbol must be conver to charCode
-  var specChar = ['v', 'w', 't', 'g', 'j',  'p', 't'];
+  var specChar = ['v', 'w', 't', 'g', 'j', 'з', 'ё', 'а', 'й'];
 
   var getTrueOrFalse = function() {
     return !!Math.round(Math.random());
@@ -26,13 +26,17 @@ var crypt = (function() {
 
   var wrappedInRandomletters = function(char) {
 
-    specChar.forEach(function(spec) {
-      if (spec.charCodeAt(0) == parseInt(char, 16)) {
-        char = getTrueOrFalse() ? spec.toUpperCase(): spec;
-      }
-    });
+    var charList = char;
 
-    var charList = getTrueOrFalse() ? reverseValue(char) + getRandomChar(specReverse) : char;
+    if (getTrueOrFalse()) {
+      specChar.forEach(function(spec) {
+        if (spec.charCodeAt(0) == parseInt(char, 16)) {
+          char = getTrueOrFalse() ? spec.toUpperCase(): spec;
+        }
+      });
+    } else {
+      charList = reverseValue(char) + getRandomChar(specReverse);
+    }
     var countLetters = getRandomInteger(3,1);
 
     for (var i = 0; i < countLetters; i++) {
@@ -54,7 +58,7 @@ var crypt = (function() {
 
   var bitwiseXOR = function(firstOperand, secondOperandsArray) {
     secondOperandsArray.forEach(function(value) {
-      firstOperand ^= parseInt(value/secondOperandsArray.length);
+      firstOperand ^= value % secondOperandsArray;
     });
     return firstOperand;    
   }
@@ -62,8 +66,10 @@ var crypt = (function() {
 
   var create = function(text, key) {
 
-    if (key === undefined || key === '') {
-      return Error('You must put key as second parameter');
+    if (text === (undefined || '' )) {
+      return Error('You must put message for right work');
+    } else if (key === (undefined || '' )) {
+      return Error('You must put key for right work');
     }
 
     var keys = getEveryCharacterCodeArray(key);
@@ -81,14 +87,16 @@ var crypt = (function() {
       return new Error('You must put key as second parameter');
     }
 
-    var exp = new RegExp('[a-f]?(\\d{1,2}|[' + specChar.join('') + '])([a-f' + specReverse.join('') + '])?', 'gi');
+    var exp = new RegExp('[a-f]?(\\d+|[a-f]|[' + specChar.join('') + '])([a-f' + specReverse.join('') + '])?', 'gi');
     var specReverseExp = new RegExp('[' + specReverse.join('') + ']', 'i');
     var specCharExp = new RegExp('[' + specChar.join('') + ']', 'i');
 
     var keys = getEveryCharacterCodeArray(key);
-
-
-    return text.match(exp).map(function(char) {
+    var matchArray = text.match(exp);
+    if (!matchArray) {
+      return text;
+    }
+    return matchArray.map(function(char) {
       //if match specReverse symbols, then need remove that symbols and return reversed value
       if (char.match(specReverseExp)) {
         char = reverseValue(char.replace(specReverseExp, ''));
