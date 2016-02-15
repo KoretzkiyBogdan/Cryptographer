@@ -9,8 +9,8 @@ Install locally:
 
 Usage:
 
-  crypt.create(regularMessage, key) - return cryptographic string. Nobody can read this if don't know key.
-  crypt.parse(cryptMessage, key) - return normal string.
+  crypt.encode(regularMessage, key) - return cryptographic string. Nobody can read this if don't know key.
+  crypt.decode(cryptMessage, key) - return normal string.
   
 Example:
 
