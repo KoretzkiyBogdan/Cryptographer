@@ -1,11 +1,11 @@
 var crypt = (function() {
 
   // Random symbols
-  var letters = ['k','l','m', 'n'];
+  var letters = ['g', 'h', 'i', 'p', 'q', 'r', 'y', 'z'].concat(["а", "б", "в"]);
   // flag symbols, that means as value must be reversed
-  var specReverse = ['h', 'u', 'i', 'в', 'г', 'д', 'ж', 'я'];
+  var specReverse = ['j', 'k', 'l', 's', 't', 'u', '!', '$', '|', '@', '~'].concat(["г", "д", "е", "?"]);
   //flag symbols, that means as value symbol must be conver to charCode
-  var specChar = ['v', 'w', 't', 'g', 'j', 'з', 'ё', 'а', 'й'];
+  var specChar = ['m', 'n', 'o', 'v', 'w', 'x', '&', '^',  '%', '#'].concat(["ё", "ж", "з","и", "й","к","л","м", "с", "т", "у", "ю", "я"]);
 
   var getTrueOrFalse = function() {
     return !!Math.round(Math.random());
@@ -22,26 +22,31 @@ var crypt = (function() {
   var getRandomChar = function(charList) {
     var char = charList[getRandomInteger(charList.length - 1)];
     return (getTrueOrFalse() ? char.toUpperCase() : char);
-  }
+  };
 
   var wrappedInRandomletters = function(char) {
 
     var charList = char;
 
+    //Convert number to letter
     if (getTrueOrFalse()) {
       specChar.forEach(function(spec) {
         if (spec.charCodeAt(0) == parseInt(char, 16)) {
           char = getTrueOrFalse() ? spec.toUpperCase(): spec;
         }
       });
-    } else {
+    } 
+    if (getTrueOrFalse()) {
       charList = reverseValue(char) + getRandomChar(specReverse);
     }
-    var countLetters = getRandomInteger(3,1);
+    var countRightLetters = getRandomInteger(4,1);
+    var countLeftLetters = getRandomInteger(4,1);
 
-    for (var i = 0; i < countLetters; i++) {
-      charList += getRandomChar(letters);
-      charList = getRandomChar(letters) + charList;
+    for (var i = 0; i < countRightLetters; i++) {
+      charList += getTrueOrFalse() ? getRandomChar(letters).toUpperCase(): getRandomChar(letters);
+    }
+    for (var i = 0; i < countLeftLetters; i++) {
+      charList = (getTrueOrFalse() ? getRandomChar(letters).toUpperCase() : getRandomChar(letters)) + charList;
     }
 
     return charList;
@@ -58,7 +63,7 @@ var crypt = (function() {
 
   var bitwiseXOR = function(firstOperand, secondOperandsArray) {
     secondOperandsArray.forEach(function(value) {
-      firstOperand ^= value % secondOperandsArray;
+      firstOperand ^= Math.floor(value/secondOperandsArray.length);
     });
     return firstOperand;    
   }
