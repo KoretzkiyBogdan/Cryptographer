@@ -10,9 +10,9 @@ window.addEventListener('load', function() {
         key = document.querySelector('input[name="key"]').value,
         method = document.querySelector('input[type="radio"]:checked').value;
     if (method === 'create') {
-      output.innerHTML = crypt.create(message, key);
+      output.innerHTML = crypt.encode(message, key);
     } else {
-      output.innerHTML = crypt.parse(message, key);
+      output.innerHTML = crypt.decode(message, key);
     }
     event.preventDefault();
     return false;
