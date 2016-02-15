@@ -64,7 +64,7 @@ var crypt = (function() {
   }
 
 
-  var create = function(text, key) {
+  var encode = function(text, key) {
 
     if (text === (undefined || '' )) {
       return Error('You must put message for right work');
@@ -81,7 +81,7 @@ var crypt = (function() {
 
   };
 
-  var parse = function(text, key) {
+  var decode = function(text, key) {
 
     if (key === undefined || key === '') {
       return new Error('You must put key as second parameter');
@@ -111,7 +111,7 @@ var crypt = (function() {
   };
 
   return {
-    create: create,
-    parse: parse
+    encode: encode,
+    decode: decode
   };
 })();

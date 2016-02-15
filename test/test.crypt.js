@@ -18,8 +18,8 @@ describe('Crypt test', function() {
   describe('Create test: non-equal to origin cryptographic message with ' + Object.keys(messages).length + ' lang', function() {
     Object.keys(messages).forEach(function(lang) {
       it('should create message with ' + lang + ' lang', function() {
-        testData[lang] = crypt.create(messages[lang], key);
-        expect(crypt.create(messages[lang], key)).not.to.be.equal(testData[lang]);
+        testData[lang] = crypt.encode(messages[lang], key);
+        expect(messages[lang]).not.to.be.equal(testData[lang]);
       });
     });
   });
@@ -27,8 +27,8 @@ describe('Crypt test', function() {
   describe('Parse test: return origin message with right key', function() {
     Object.keys(messages).forEach(function(lang) {
       it('should return origin message with ' + lang + ' lang', function() {
-        testData[lang] = crypt.create(messages[lang], key);
-        expect(crypt.parse(testData[lang], key)).to.be.equal(messages[lang]);
+        testData[lang] = crypt.encode(messages[lang], key);
+        expect(crypt.decode(testData[lang], key)).to.be.equal(messages[lang]);
       });
     });
   });
@@ -38,9 +38,9 @@ describe('Crypt test', function() {
     for(var i = 0; i < count; i++) {
       var lang = availableLanguages[randomInt(availableLanguages.length, 0)];
       it('creat and parse №' + (i+1) + ' without error (' + lang + ')', function() {
-        var cryptMessage = crypt.create(messages.eng, key);
+        var cryptMessage = crypt.encode(messages.eng, key);
         expect(cryptMessage).not.to.be.equal(messages.eng);
-        expect(crypt.parse(cryptMessage, key)).to.be.equal(messages.eng);       
+        expect(crypt.decode(cryptMessage, key)).to.be.equal(messages.eng);       
       });
     };
   })
