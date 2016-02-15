@@ -6,7 +6,7 @@ var uglify = require('gulp-uglify');
 
 gulp.task('compress', function() {
   gulp.src('src/*.js')
-    .pipe(uglify())
+    .pipe(uglify().on('error', console.error))
     .pipe(gulp.dest('bundles'));
 });
 
