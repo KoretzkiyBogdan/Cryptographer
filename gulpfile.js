@@ -15,9 +15,17 @@ gulp.task('sass', function () {
     .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
     .pipe(gulp.dest('bundles'));
 });
+
+gulp.task('compress:watch', function () {
+  gulp.watch('src/*.js', ['compress']);
+});
  
 gulp.task('sass:watch', function () {
   gulp.watch('src/*.scss', ['sass']);
+});
+
+gulp.task('watch', function() {
+  gulp.watch(['src/*scss', 'src/*js'], ['sass', 'compress']);
 });
 
 gulp.task('default', ['sass', 'compress']);
