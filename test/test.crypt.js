@@ -10,7 +10,8 @@ var key = "qqwweer",
     count = 100;
 
 var randomInt = function(max, min) {
-  return Math.floor(Math.random() * max + (min || 0));
+  min = min || 0;
+  return Math.floor(Math.random() * (max - min) + min);
 };
 
 
