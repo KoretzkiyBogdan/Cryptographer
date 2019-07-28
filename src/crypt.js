@@ -1,28 +1,31 @@
-var crypt = (function() {
+const crypt = (function() {
+  // Just symbols for mock :)
+  const RANDOM_SYMBOLS = [
+    ...['g', 'h', 'i', 'p', 'q', 'r', 'y', 'z'],
+    ...['а', 'б', 'в']
+  ];
+  // Flag for reversed value
+  const REVERSE_SYMBOLS = [
+    ...['j', 'k', 'l', 's', 't', 'u', '!', '$', '|', '@', '~'],
+    ...['г', 'д', 'е', '?']
+  ];
+  // Flag for char code converted value
+  const CHAR_CODE_SYMBOLS = [
+    ...['m', 'n', 'o', 'v', 'w', 'x', '&', '^',  '%', '#'],
+    ...['ё', 'ж', 'з','и', 'й','к','л','м', 'с', 'т', 'у', 'ю', 'я']
+  ];
 
-  // Random symbols
-  var letters = ['g', 'h', 'i', 'p', 'q', 'r', 'y', 'z'].concat(["а", "б", "в"]);
-  // flag symbols, that means as value must be reversed
-  var specReverse = ['j', 'k', 'l', 's', 't', 'u', '!', '$', '|', '@', '~'].concat(["г", "д", "е", "?"]);
-  //flag symbols, that means as value symbol must be conver to charCode
-  var specChar = ['m', 'n', 'o', 'v', 'w', 'x', '&', '^',  '%', '#'].concat(["ё", "ж", "з","и", "й","к","л","м", "с", "т", "у", "ю", "я"]);
+  const DECODE_REG_EXP = new RegExp(`[a-f]?(\\d+|[a-f]|[${CHAR_CODE_SYMBOLS.join('')}])([a-f${REVERSE_SYMBOLS.join('')}])?`, 'gi');
+  const REVERSE_SYMBOL_REG_EXP = new RegExp(`[${REVERSE_SYMBOLS.join('')}]`, 'i');
+  const CHAR_CODE_SYMBOLS_REG_EXP = new RegExp(`[${CHAR_CODE_SYMBOLS.join('')}]`, 'i');
 
-  const exp = new RegExp(`[a-f]?(\\d+|[a-f]|[${specChar.join('')}])([a-f${specReverse.join('')}])?`, 'gi');
-  const specReverseExp = new RegExp(`[${specReverse.join('')}]`, 'i');
-  const specCharExp = new RegExp(`[${specChar.join('')}]`, 'i');
-
-
-  let utils = {
-
-
-    /** 
+  const utils = {
+    /**
      * @returns {boolean}
      */
     getRandomBoolean() {
       return !!Math.round(Math.random());
     },
-
-
     /**
      * @param max    {number}
      * @param min    {number}
@@ -31,31 +34,33 @@ var crypt = (function() {
     getRandomIntegerFromRange(max = 1, min = 0) {
       return Math.floor(Math.random() * (max - min) + min);
     },
-
-
     /**
-     * This returns reversed string
+     * Returns a reversed string
      *
-     * @param sourceString      {string}
+     * @param source            {string}
      * @returns                 {string}
      */
-    reverseString(sourceString) {
-      return sourceString.split('').reverse().join('')
+    reverseString(source) {
+      return source.split('').reverse().join('');
     },
-
-
+    /**
+     * Convert string to random case
+     *
+     * @param string {string}
+     * @returns      {string}
+     */
+    toRandomCase(string = '') {
+      return string[this.getRandomBoolean() ? 'toUpperCase' : 'toLowerCase']();
+    },
     /**
      * Returns random character from list
      *
      * @param  list       {array}
      * @return            {string}
      */
-    getRandomCharacterFromList(list) {
-      let char = list[utils.getRandomIntegerFromRange(list.length - 1)];
-      return utils.getRandomBoolean() ? char.toUpperCase() : char;      
+    getRandomCharacterFromList(list = []) {
+      return list[utils.getRandomIntegerFromRange(list.length - 1)];
     },
-
-
     /**
      * @param  firstOperand     {number}
      * @param  secondOperands   {array}
@@ -63,9 +68,8 @@ var crypt = (function() {
      */
     bitwiseXOR(firstOperand, secondOperands) {
       secondOperands.forEach(value => firstOperand ^= Math.floor(value / secondOperands.length));
-      return firstOperand;    
+      return firstOperand;
     },
-
     /**
      * @param key   {string}
      * @returns     {number[]}
@@ -73,87 +77,80 @@ var crypt = (function() {
     getEveryCharactersCode(key) {
       return key.split('').map(char => char.charCodeAt(0));
     }
-
   };
 
-  var wrappedInRandomletters = function(char) {
+  const wrapInRandomLetters = function(char) {
+    let result = char;
 
-    let charList = char;
-
-    //Convert number to letter
     if (utils.getRandomBoolean()) {
-      specChar.forEach(spec => {
-        if (spec.charCodeAt(0) == parseInt(char, 16)) {
-          char = utils.getRandomBoolean() ? spec.toUpperCase(): spec;
-        }
-      });
-    } 
-    if (utils.getRandomBoolean()) {
-      charList = utils.reverseString(char) + utils.getRandomCharacterFromList(specReverse);
+      const matchedSymbol = CHAR_CODE_SYMBOLS.find((symbol) => symbol.charCodeAt(0) === parseInt(char, 16));
+      if (matchedSymbol) result = utils.toRandomCase(matchedSymbol);
     }
-    let countOfRightLetters = utils.getRandomIntegerFromRange(4, 1),
-      countOfLeftLetters = utils.getRandomIntegerFromRange(4, 1);
+    if (utils.getRandomBoolean()) {
+      const randomChar =  utils.toRandomCase(utils.getRandomCharacterFromList(REVERSE_SYMBOLS));
+      result = utils.reverseString(char) + randomChar;
+    }
 
-    for (let i = 0; i < countOfRightLetters + countOfLeftLetters; i++) {
-      let randomLetter = utils.getRandomBoolean() ? utils.getRandomCharacterFromList(letters).toUpperCase(): utils.getRandomCharacterFromList(letters);
-      if (i < countOfRightLetters) {
-        charList += randomLetter;
+    const paddingRight = utils.getRandomIntegerFromRange(4, 1);
+    const paddingLeft = utils.getRandomIntegerFromRange(4, 1);
+
+    for (let i = 0; i < paddingRight + paddingLeft; i++) {
+      let randomLetter =  utils.toRandomCase(utils.getRandomCharacterFromList(RANDOM_SYMBOLS));
+      if (i < paddingRight) {
+        result = result + randomLetter;
       } else {
-        charList = randomLetter + charList;
+        result = randomLetter + result;
       }
     }
 
-    return charList;
+    return result;
   };
 
 
-  let encode = function(text, key) {
+  const encode = (text, key) => {
 
-    if (text === (undefined || '' )) {
-      return Error('You must put message for right work');
-    } else if (key === (undefined || '' )) {
-      return Error('You must put key for right work');
-    }
+    if (!text) throw new Error('You must put message for right work');
+    if (!key) throw new Error('You must put key for right work');
 
-    var keys = utils.getEveryCharactersCode(key);
+    const keys = utils.getEveryCharactersCode(key);
 
-    return text.split('').map(char => {
-      return wrappedInRandomletters(utils
-        .bitwiseXOR(char.charCodeAt(0), keys)
-        .toString(16));
-    }).join('');
-
+    return text
+      .split('')
+      .map(char => (
+        wrapInRandomLetters(
+          utils
+            .bitwiseXOR(char.charCodeAt(0), keys)
+            .toString(16)
+        )
+      ))
+      .join('');
   };
 
-  let decode = function(text, key) {
-    if (key === undefined || key === '') {
-      return new Error('You must put key as second parameter');
-    }
+  const decode = (text, key) => {
 
-    let keys = utils.getEveryCharactersCode(key),
-      matchArray = text.match(exp);
+    if (!key) throw new Error('You must put key as second parameter');
 
-    if (!matchArray) {
-      return text;
-    }
+    const keys = utils.getEveryCharactersCode(key);
+    const matchedArray = text.match(DECODE_REG_EXP);
 
-    return matchArray.map(char => {
-      //if match specReverse symbols, then need remove that symbols and return reversed value
-      if (char.match(specReverseExp)) {
-        char = utils.reverseString(char.replace(specReverseExp, ''));
-      };
-      //if match specChar symbols, then need conver to lowerCase and get char code in hexadecimal system
-      if (char.match(specCharExp)) {
-        char = char.toLowerCase().charCodeAt(0).toString(16);
-      }
-      char = utils.bitwiseXOR(parseInt(char, 16), keys);
-      return String.fromCharCode(char);
-    }).join('');
+    if (!matchedArray) return text;
+
+    return matchedArray
+      .map(char => {
+        if (char.match(REVERSE_SYMBOL_REG_EXP)) {
+          char = utils.reverseString(char.replace(REVERSE_SYMBOL_REG_EXP, ''));
+        };
+        if (char.match(CHAR_CODE_SYMBOLS_REG_EXP)) {
+          char = char.toLowerCase().charCodeAt(0).toString(16);
+        }
+        char = utils.bitwiseXOR(parseInt(char, 16), keys);
+        return String.fromCharCode(char);
+      })
+      .join('');
   };
 
   return {
     encode,
     decode
   };
-
 })();

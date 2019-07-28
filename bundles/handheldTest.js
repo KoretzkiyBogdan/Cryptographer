@@ -1,22 +1,16 @@
 'use strict';
 
-/* For Index Page */
-
 window.addEventListener('load', function () {
 
-  var form = document.getElementById('test'),
-      output = document.getElementsByClassName('output')[0];
+  var form = document.getElementById('test');
+  var output = document.getElementsByClassName('output')[0];
 
   form.addEventListener('submit', function (event) {
-    var message = document.querySelector('textarea[name="message"]').value.trim(),
-        key = document.querySelector('input[name="key"]').value,
-        method = document.querySelector('input[type="radio"]:checked').value.trim();
+    var message = document.querySelector('textarea[name="message"]').value.trim();
+    var key = document.querySelector('input[name="key"]').value;
+    var method = document.querySelector('input[type="radio"]:checked').value.trim();
 
-    if (method === 'encode') {
-      output.innerHTML = crypt.encode(message, key);
-    } else {
-      output.innerHTML = crypt.decode(message, key);
-    }
+    output.innerHTML = crypt[method](message, key);
     event.preventDefault();
     return false;
   });
