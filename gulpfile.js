@@ -1,37 +1,27 @@
-'use strict';
+const gulp = require('gulp');
+const sass = require('gulp-sass');
+const babel = require('gulp-babel');
+const sourcemaps = require('gulp-sourcemaps');
 
-var gulp = require('gulp');
-var sass = require('gulp-sass');
-var babel = require('gulp-babel');
+const DIST = 'bundles';
 
-gulp.task('babel', function() {
-    return gulp
-      .src('src/*js')
-      .pipe(babel({
-        presets: ['es2015']
-      }))
-      .pipe(gulp.dest('bundles'))
-});
+gulp.task('babel', () => (
+  gulp
+    .src('src/*js')
+    .pipe(sourcemaps.init())
+    .pipe(babel({presets: ['es2015']}))
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest(DIST))
+));
 
-gulp.task('sass', function() {
-    return gulp
-      .src('src/*.scss')
-      .pipe(sass({
-          outputStyle: 'compressed'
-      }).on('error', sass.logError))
-      .pipe(gulp.dest('bundles'));
-});
+gulp.task('sass', () => (
+  gulp
+    .src('src/*.scss')
+    .pipe(sass({outputStyle: 'compressed'})
+    .on('error', sass.logError))
+    .pipe(gulp.dest(DIST))
+));
 
-gulp.task('compress:watch', function() {
-    return gulp.watch('src/*.js', ['babel']);
-});
-
-gulp.task('sass:watch', function() {
-    return gulp.watch('src/*.scss', ['sass']);
-});
-
-gulp.task('watch', function() {
-    return gulp.watch(['src/*scss', 'src/*js'], ['sass', 'babel']);
-});
+gulp.task('watch', ['sass', 'babel'], () => gulp.watch(['src/*scss', 'src/*js'], ['sass', 'babel']));
 
 gulp.task('default', ['sass', 'babel']);

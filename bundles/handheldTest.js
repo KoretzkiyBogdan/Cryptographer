@@ -15,3 +15,4 @@ window.addEventListener('load', function () {
     return false;
   });
 });
+//# sourceMappingURL=handheldTest.js.map
